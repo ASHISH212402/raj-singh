@@ -1,94 +1,78 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Contact Raj Singh</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact Form</title>
   <style>
     body {
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 40px;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 500px;
+      margin: auto;
     }
-
-    nav a {
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-      color: #007BFF;
-    }
-
-    form {
-      margin-top: 30px;
-    }
-
-    input, textarea {
-      display: block;
-      margin: 10px auto;
+    input, textarea, button {
+      width: 100%;
       padding: 10px;
-      width: 300px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      margin-top: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
     }
-
     button {
-      padding: 10px 20px;
-      background: #007BFF;
+      background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 8px;
       cursor: pointer;
     }
-
     button:hover {
-      background: #0056b3;
+      background-color: #0056b3;
+    }
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Contact Raj Singh</h1>
-
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-  </nav>
-
+  <h2>Contact Us</h2>
   <form id="contactForm">
     <input type="text" id="name" placeholder="Your Name" required />
     <input type="email" id="email" placeholder="Your Email" required />
-    <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
-    <button type="submit">Submit</button>
+    <textarea id="message" placeholder="Your Message" required></textarea>
+    <button type="submit">Send</button>
+    <p id="status"></p>
   </form>
-
-  <p id="status"></p>
 
   <script>
     const form = document.getElementById("contactForm");
     const status = document.getElementById("status");
 
     form.addEventListener("submit", function(event) {
-      event.preventDefault(); // form refresh hone se roke
+      event.preventDefault();
 
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const message = document.getElementById("message").value;
-
-      // Object me data store karein
-      const formData = {
-        name: name,
-        email: email,
-        message: message,
-        time: new Date().toLocaleString()
+      const data = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        message: document.getElementById("message").value
       };
 
-      // Local Storage me save
-      let data = JSON.parse(localStorage.getItem("contactData")) || [];
-      data.push(formData);
-      localStorage.setItem("contactData", JSON.stringify(data));
-
-      // Clear form + show message
-      form.reset();
-      status.innerText = "Message saved successfully!";
-      status.style.color = "green";
+      fetch("https://script.google.com/macros/s/AKfycbz9RmJbc17RViUQN1gqLwGDLFAw9DNIqfRNaGrDaKkrZ7ydCpY1sKdceAQ11Cf7H9GHkw/exec", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(response => {
+        status.innerText = "Message sent successfully!";
+        status.style.color = "green";
+        form.reset();
+      })
+      .catch(error => {
+        status.innerText = "Failed to send message.";
+        status.style.color = "red";
+      });
     });
   </script>
 </body>
