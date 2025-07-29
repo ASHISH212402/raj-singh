@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Contact Manager</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background: #f2f2f2; }
+    header { background: #004080; color: white; padding: 20px; text-align: center; }
+    main { padding: 20px; max-width: 800px; margin: auto; background: white; }
+
+    h2 { color: #004080; margin-top: 0; }
+    form input, form textarea, form button {
+      width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #ccc;
+    }
+    form button { background: #004080; color: white; border: none; cursor: pointer; }
+    form button:hover { background: #0066cc; }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+    th { background: #e6f2ff; }
+
+    .clear-btn {
+      background: #cc0000; color: white; padding: 10px; border: none; margin-top: 10px;
+      cursor: pointer; width: 100%; border-radius: 5px;
+    }
+
+    @media (max-width: 600px) {
+      header, main { padding: 10px; }
+      table, thead, tbody, th, td, tr {
+        display: block; width: 100%;
+      }
+      td { border: none; padding: 8px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Smart Contact Manager</h1>
+    <p>Save and manage your contacts locally</p>
+  </header>
+
+  <main>
+    <h2>Add New Contact</h2>
+    <form id="contactForm">
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email Address" required />
+      <input type="tel" id="phone" placeholder="Phone Number" required />
+      <textarea id="message" placeholder="Your Message" rows="3"></textarea>
+      <button type="submit">Save Contact</button>
+    </form>
+
+    <button class="clear-btn" onclick="clearContacts()">Clear All Contacts</button>
+
+    <h2>Saved Contacts</h2>
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Message</th></tr>
+      </thead>
+      <tbody id="contactTableBody"></tbody>
+    </table>
+  </main>
+
+  <script>
+    const form = document.getElementById("contactForm");
+    const tableBody = document.getElementById("contactTableBody");
+
+    function loadContacts() {
+      const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+      tableBody.innerHTML = "";
+      contacts.forEach(contact => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${contact.name}</td>
+          <td>${contact.email}</td>
+          <td>${contact.phone}</td>
+          <td>${contact.message}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      const contact = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        message: document.getElementById("message").value
+      };
+      const contacts = JSON.parse(localStorage.getItem("contacts")) || [];
+      contacts.push(contact);
+      localStorage.setItem("contacts", JSON.stringify(contacts));
+      form.reset();
+      loadContacts();
+    });
+
+    function clearContacts() {
+      if (confirm("Are you sure you want to delete all contacts?")) {
+        localStorage.removeItem("contacts");
+        loadContacts();
+      }
+    }
+
+    window.onload = loadContacts;
+  </script>
+
+</body>
+</html>
