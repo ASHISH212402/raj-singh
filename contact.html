@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact Raj Singh</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 40px;
+    }
+
+    nav a {
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #007BFF;
+    }
+
+    form {
+      margin-top: 30px;
+    }
+
+    input, textarea {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 300px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>Contact Raj Singh</h1>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Your Name" required />
+    <input type="email" id="email" placeholder="Your Email" required />
+    <textarea id="message" rows="4" placeholder="Your Message" required></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", function(event) {
+      event.preventDefault(); // form refresh hone se roke
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+
+      // Object me data store karein
+      const formData = {
+        name: name,
+        email: email,
+        message: message,
+        time: new Date().toLocaleString()
+      };
+
+      // Local Storage me save
+      let data = JSON.parse(localStorage.getItem("contactData")) || [];
+      data.push(formData);
+      localStorage.setItem("contactData", JSON.stringify(data));
+
+      // Clear form + show message
+      form.reset();
+      status.innerText = "Message saved successfully!";
+      status.style.color = "green";
+    });
+  </script>
+</body>
+</html>
